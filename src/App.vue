@@ -13,6 +13,10 @@ function addTransaction(){
   newTransaction.value = ""
 }
 
+function deleteTransaction(index){
+  transactionList.value.splice(index,1)
+}
+
 </script>
 
 <template>
@@ -20,9 +24,10 @@ function addTransaction(){
   <input v-model="newTransaction" placeholder="Enter a new transaction">
   <button @click="addTransaction"></button>
   <div class="transactions">
-  <div id="transactionDiv" :class="{profit : transaction.profit, loss : !transaction.profit}" v-for="transaction in transactionList" :key="transaction.id">
+  <div id="transactionDiv" :class="{profit : transaction.profit, loss : !transaction.profit}" v-for="(transaction, index) in transactionList" :key="transaction.id">
     <b><span class="transactionAmount">{{ transaction.amount + "€"}}</span></b>
     <span class="transactionDescription">{{transaction.description}}</span>
+    <button class="deleteButton" @click="deleteTransaction(index)">X</button>
   </div>
   </div>
   </div>
@@ -58,8 +63,10 @@ function addTransaction(){
 
 #transactionDiv {
   display: grid;
-  grid-template-columns: 75px auto;
-  grid-template-rows: 20px auto;
+  grid-template-columns: 75px auto 30px;
+  align-items: center;
+  box-shadow: 3px 3px 2px gray;
+
 }
 
 .transactionAmount {
@@ -68,5 +75,21 @@ function addTransaction(){
   min-width: 5vw;
 }
 
+.deleteButton {
+  border: none;
+  background-color: white;
+  border-radius: 15px;
+  border-color: black;
+  padding: 8px 20px 8px 10px;
+  border: 1px solid;
+  transition: 200ms;
+  box-shadow: 1px 1px 5px;
+}
+
+.deleteButton:hover {
+  cursor: pointer;
+  scale: 1.1;
+  background-color: rgb(235, 229, 229);
+}
 
 </style>
