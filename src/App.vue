@@ -1,78 +1,136 @@
 <script setup>
 import { ref } from "vue";
+import addModal from "./addModal.vue";
+import editModal from "./editModal.vue";
+
+const showAddModal = ref(false)
+const showEditModal = ref(false)
 
 let id = 0
-const transactionList = ref([{id:id++, amount:15.9, description:"School supplies", profit:false},
-  {id:id++, amount:850, description:"Salary",profit:true}
+const transactionList = ref([{ id: id++, amount: 15.9, description: "School supplies", isIncome: false },
+{ id: id++, amount: 850, description: "Salary", isIncome: true }
 ])
 
-const newTransaction = ref("")
 
-function addTransaction(){
-  transactionList.value.push({id:id++, amount:15,description:newTransaction.value,profit:true})
-  newTransaction.value = ""
+function deleteTransaction(index) {
+  transactionList.value.splice(index, 1)
 }
 
-function deleteTransaction(index){
-  transactionList.value.splice(index,1)
+function handleAddTransaction(newTransaction) {
+  transactionList.value.push({ id: id++, amount: newTransaction.amount, description: newTransaction.description, isIncome: newTransaction.isIncome })
+  showAddModal.value = false;
+}
+
+function handleUpdateTransaction(newTransaction) {
+
+
+}
+
+function updateFunction(transaction) {
+  showEditModal.value = true
+
 }
 
 </script>
 
 <template>
-  <div id="box">
-  <input v-model="newTransaction" placeholder="Enter a new transaction">
-  <button @click="addTransaction"></button>
-  <div class="transactions">
-  <div id="transactionDiv" :class="{profit : transaction.profit, loss : !transaction.profit}" v-for="(transaction, index) in transactionList" :key="transaction.id">
-    <b><span class="transactionAmount">{{ transaction.amount + "€"}}</span></b>
-    <span class="transactionDescription">{{transaction.description}}</span>
-    <button class="deleteButton" @click="deleteTransaction(index)">X</button>
+  <div id="background">
+    <div class="header">
+      <h1 id="title">Transaction Tracker</h1>
+    </div>
+
+    <div id="box">
+
+      <button id="showAddModalButton" @click="showAddModal = true">Add Transaction</button>
+
+      <div class="transactions">
+        <div id="transactionDiv" @click="updateFunction(transaction)"
+          :class="{ isIncome: transaction.isIncome, isExpense: !transaction.isIncome }"
+          v-for="(transaction, index) in transactionList" :key="transaction.id">
+          <b><span class="transactionAmount">{{ transaction.amount + "€" }}</span></b>
+          <span class="transactionDescription">{{ transaction.description }}</span>
+          <button class="deleteButton" @click="deleteTransaction(index)">X</button>
+        </div>
+      </div>
+    </div>
+
+    <addModal v-if="showAddModal" @close="showAddModal = false" @add="handleAddTransaction" />
+    <editModal v-if="showEditModal" @close="showEditModal = false" @edit="handleUpdateTransaction"
+      @remove="handleRemoveTransaction" />
+
   </div>
-  </div>
-  </div>
+
+
+
+
 </template>
 
 <style scoped>
+#background {
+  background-color: rgb(246, 247, 248);
+  padding-bottom: 54vh;
+}
+
+.header {
+  background-color: green;
+  padding: 3vh;
+}
+
+#title {
+  margin: 50;
+}
 
 #box {
-  max-width: 80vw;
+  max-width: 50vw;
   margin: 0 auto;
 }
 
-.profit {
-  background-color: rgb(86, 134, 12);
+.isIncome {
+  border: 2px solid;
+  border-color: rgb(25, 180, 59);
+  color: rgb(25, 180, 59);
 }
 
-.loss {
-  background-color: rgb(146, 17, 17);
+.isExpense {
+  border: 2px solid;
+  border-color: rgb(146, 17, 17);
+  color: rgb(146, 17, 17);
 }
 
 .transactions {
   display: flex;
-  gap: 12px;      /* vahe elementide vahel */
+  gap: 12px;
   align-items: left;
   flex-direction: column;
 }
 
-.transactions div{
+.transactions div {
   padding: 20px;
   margin: 0px 50px 0px;
-  border-radius: 10px;
+  border-radius: 20px;
 }
 
 #transactionDiv {
   display: grid;
   grid-template-columns: 75px auto 30px;
   align-items: center;
-  box-shadow: 3px 3px 2px gray;
+  box-shadow: 2px 2px 2px gray;
+  background-color: rgb(255, 255, 255);
+  transition: 200ms;
+}
 
+#transactionDiv:hover {
+  transform: translateY(-2px);
 }
 
 .transactionAmount {
-  color:white;
-  font-size:20px;
+  font-size: 1.5rem;
   min-width: 5vw;
+}
+
+.transactionDescription {
+  color: black;
+  font-size: 1.25rem;
 }
 
 .deleteButton {
@@ -83,13 +141,31 @@ function deleteTransaction(index){
   padding: 8px 20px 8px 10px;
   border: 1px solid;
   transition: 200ms;
-  box-shadow: 1px 1px 5px;
+  box-shadow: 1px 1px 2px;
 }
 
 .deleteButton:hover {
   cursor: pointer;
   scale: 1.1;
-  background-color: rgb(235, 229, 229);
+  background-color: rgb(247, 243, 243);
 }
 
+#showAddModalButton {
+  padding: 15px;
+  margin: 20px 20px 20px 50px;
+  border-radius: 20px;
+  border: 2px solid green;
+  background-color: rgb(25, 180, 59);
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 200ms;
+  box-shadow: 2px 2px 2px gray;
+}
+
+#showAddModalButton:hover {
+  transform: translateY(-2px);
+  background-color: rgb(19, 145, 46);
+}
 </style>
