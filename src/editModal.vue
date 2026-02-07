@@ -3,11 +3,15 @@ import { ref } from 'vue'
 
 const emit = defineEmits("edit", "remove", "close")
 
-const description = ref("")
-const amount = ref(null)
-const profitOrLoss = ref("")
+const props = defineProps(["transaction"])
 
-function editTransaction(id) {
+const id = ref(props.transaction.id)
+const description = ref(props.transaction.description)
+const amount = ref(props.transaction.amount)
+const profitOrLoss = ref(props.transaction.isIncome ? "Income" : "Expense")
+
+
+function editTransaction() {
 
     if (!description.value || !amount.value || !profitOrLoss.value) {
         alert("Please fill all fields!");
@@ -19,14 +23,11 @@ function editTransaction(id) {
         income = true;
     }
 
-    emit("edit", { id: id, description: description.value, amount: amount.value, isIncome: income })
+    emit("edit", { id: id.value, description: description.value, amount: amount.value, isIncome: income })
     newTransaction.value = "";
     amount.value = null;
 }
 
-function deleteTransaction() {
-    console.log("test")
-}
 
 </script>
 
@@ -34,7 +35,7 @@ function deleteTransaction() {
 
     <div class="modalOverlay">
         <div class="modalContent">
-            <h2>Add new transaction</h2>
+            <h2>Edit Transaction</h2>
             <hr id="upperLine">
             <input v-model="description" placeholder="Description" maxlength="70">
             <input type="number" v-model="amount" placeholder="Amount">
@@ -46,9 +47,9 @@ function deleteTransaction() {
             </select>
             <hr id="lowerLine">
             <div class="flexButtons">
-                <button @click="editTransaction(id)" class="addButton">Update</button>
+                <button @click="editTransaction" class="updateButton">Update</button>
                 <button @click="emit('close')" class="cancelButton">Cancel</button>
-                <button @click="deleteTransaction" class="deleteButton">Delete</button>
+                <button @click="emit('remove')" class="deleteButton">Delete</button>
             </div>
         </div>
     </div>
@@ -103,11 +104,11 @@ input {
     box-shadow: 2px 2px 2px rgb(238, 237, 237);
 }
 
-.addButton {
+.updateButton {
     background-color: rgb(25, 180, 59);
     color: white;
     border: 1px solid green;
-    padding: 10px 23px;
+    padding: 10px 17px;
     border-radius: 4px;
     cursor: pointer;
     margin-right: 15px;
@@ -117,11 +118,28 @@ input {
     box-shadow: 2px 2px 3px gray;
 }
 
-.addButton:hover {
+.updateButton:hover {
     transform: translateY(-2px);
 }
 
 .cancelButton {
+    background-color: #7a7370b7;
+    color: white;
+    font-weight: bold;
+    padding: 10px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: 200ms;
+    border: 1px solid rgb(56, 54, 54);
+    box-shadow: 2px 2px 3px gray;
+}
+
+.cancelButton:hover {
+    transform: translateY(-2px);
+}
+
+.deleteButton {
     background-color: #a72c07b7;
     color: white;
     font-weight: bold;
@@ -132,9 +150,10 @@ input {
     transition: 200ms;
     border: 1px solid rgb(133, 28, 28);
     box-shadow: 2px 2px 3px gray;
+    margin-left: 15px;
 }
 
-.cancelButton:hover {
+.deleteButton:hover {
     transform: translateY(-2px);
 }
 

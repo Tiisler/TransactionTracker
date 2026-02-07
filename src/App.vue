@@ -5,6 +5,7 @@ import editModal from "./editModal.vue";
 
 const showAddModal = ref(false)
 const showEditModal = ref(false)
+const selectedTransaction = ref(null)
 
 let id = 0
 const transactionList = ref([{ id: id++, amount: 15.9, description: "School supplies", isIncome: false },
@@ -12,21 +13,26 @@ const transactionList = ref([{ id: id++, amount: 15.9, description: "School supp
 ])
 
 
-function deleteTransaction(index) {
-  transactionList.value.splice(index, 1)
-}
-
 function handleAddTransaction(newTransaction) {
   transactionList.value.push({ id: id++, amount: newTransaction.amount, description: newTransaction.description, isIncome: newTransaction.isIncome })
   showAddModal.value = false;
 }
 
-function handleUpdateTransaction(newTransaction) {
+function handleUpdateTransaction(updatedTransaction) {
+  const index = transactionList.value.findIndex(t => t.id === updatedTransaction.id)
+  if (index !== -1) {
+    transactionList.value[index] = updatedTransaction
+  }
+  showEditModal.value = false
+}
 
-
+function handleRemoveTransaction() {
+  transactionList.value = transactionList.value.filter(t => t.id !== selectedTransaction.value.id)
+  showEditModal.value = false
 }
 
 function updateFunction(transaction) {
+  selectedTransaction.value = transaction
   showEditModal.value = true
 
 }
@@ -46,17 +52,16 @@ function updateFunction(transaction) {
       <div class="transactions">
         <div id="transactionDiv" @click="updateFunction(transaction)"
           :class="{ isIncome: transaction.isIncome, isExpense: !transaction.isIncome }"
-          v-for="(transaction, index) in transactionList" :key="transaction.id">
+          v-for="transaction in transactionList" :key="transaction.id">
           <b><span class="transactionAmount">{{ transaction.amount + "€" }}</span></b>
           <span class="transactionDescription">{{ transaction.description }}</span>
-          <button class="deleteButton" @click="deleteTransaction(index)">X</button>
         </div>
       </div>
     </div>
 
     <addModal v-if="showAddModal" @close="showAddModal = false" @add="handleAddTransaction" />
-    <editModal v-if="showEditModal" @close="showEditModal = false" @edit="handleUpdateTransaction"
-      @remove="handleRemoveTransaction" />
+    <editModal v-if="showEditModal" @close="showEditModal = false" :transaction="selectedTransaction"
+      @edit="handleUpdateTransaction" @remove="handleRemoveTransaction" />
 
   </div>
 
@@ -131,23 +136,6 @@ function updateFunction(transaction) {
 .transactionDescription {
   color: black;
   font-size: 1.25rem;
-}
-
-.deleteButton {
-  border: none;
-  background-color: white;
-  border-radius: 15px;
-  border-color: black;
-  padding: 8px 20px 8px 10px;
-  border: 1px solid;
-  transition: 200ms;
-  box-shadow: 1px 1px 2px;
-}
-
-.deleteButton:hover {
-  cursor: pointer;
-  scale: 1.1;
-  background-color: rgb(247, 243, 243);
 }
 
 #showAddModalButton {
