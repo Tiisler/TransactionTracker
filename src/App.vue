@@ -8,13 +8,13 @@ const showEditModal = ref(false)
 const selectedTransaction = ref(null)
 
 let id = 0
-const transactionList = ref([{ id: id++, amount: 15.9, description: "School supplies", isIncome: false },
-{ id: id++, amount: 850, description: "Salary", isIncome: true }
+const transactionList = ref([{ id: id++, amount: 15.9, description: "School supplies", isIncome: false, date: "2025-02-14" },
+{ id: id++, amount: 850, description: "Salary", isIncome: true, date: "2025-02-19" }
 ])
 
 
 function handleAddTransaction(newTransaction) {
-  transactionList.value.push({ id: id++, amount: newTransaction.amount, description: newTransaction.description, isIncome: newTransaction.isIncome })
+  transactionList.value.push({ id: id++, amount: newTransaction.amount, description: newTransaction.description, isIncome: newTransaction.isIncome, date: newTransaction.date })
   showAddModal.value = false;
 }
 
@@ -40,42 +40,49 @@ function updateFunction(transaction) {
 </script>
 
 <template>
-  <div id="background">
-    <div class="header">
-      <h1 id="title">Transaction Tracker</h1>
-    </div>
+  <div class="header">
+    <h1 id="title">Transaction Tracker</h1>
+  </div>
 
-    <div id="box">
+  <div id="box">
 
-      <button id="showAddModalButton" @click="showAddModal = true">Add Transaction</button>
+    <button id="showAddModalButton" @click="showAddModal = true">Add Transaction</button>
 
-      <div class="transactions">
-        <div id="transactionDiv" @click="updateFunction(transaction)"
-          :class="{ isIncome: transaction.isIncome, isExpense: !transaction.isIncome }"
-          v-for="transaction in transactionList" :key="transaction.id">
-          <b><span class="transactionAmount">{{ transaction.amount + "€" }}</span></b>
-          <span class="transactionDescription">{{ transaction.description }}</span>
-        </div>
+    <div class="transactions">
+      <div id="transactionDiv" @click="updateFunction(transaction)"
+        :class="{ isIncome: transaction.isIncome, isExpense: !transaction.isIncome }"
+        v-for="transaction in transactionList" :key="transaction.id">
+        <b><span class="transactionAmount">{{ transaction.amount + "€" }}</span></b>
+        <span class="transactionDescription">{{ transaction.description }}</span>
+        <span class="transactionDate">{{ transaction.date }}</span>
       </div>
     </div>
-
-    <addModal v-if="showAddModal" @close="showAddModal = false" @add="handleAddTransaction" />
-    <editModal v-if="showEditModal" @close="showEditModal = false" :transaction="selectedTransaction"
-      @edit="handleUpdateTransaction" @remove="handleRemoveTransaction" />
-
   </div>
+
+  <addModal v-if="showAddModal" @close="showAddModal = false" @add="handleAddTransaction" />
+  <editModal v-if="showEditModal" @close="showEditModal = false" :transaction="selectedTransaction"
+    @edit="handleUpdateTransaction" @remove="handleRemoveTransaction" />
 
 
 
 
 </template>
 
-<style scoped>
-#background {
-  background-color: rgb(246, 247, 248);
-  padding-bottom: 54vh;
+<style>
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 
+body {
+  background-color: rgb(246, 247, 248);
+  /* Pane siia põhitausta värv */
+}
+</style>
+
+<style scoped>
 .header {
   background-color: green;
   padding: 3vh;
@@ -117,11 +124,12 @@ function updateFunction(transaction) {
 
 #transactionDiv {
   display: grid;
-  grid-template-columns: 75px auto 30px;
+  grid-template-columns: 75px auto 90px;
   align-items: center;
   box-shadow: 2px 2px 2px gray;
   background-color: rgb(255, 255, 255);
   transition: 200ms;
+  cursor: pointer;
 }
 
 #transactionDiv:hover {
@@ -155,5 +163,9 @@ function updateFunction(transaction) {
 #showAddModalButton:hover {
   transform: translateY(-2px);
   background-color: rgb(19, 145, 46);
+}
+
+.transactionDate {
+  color: black;
 }
 </style>

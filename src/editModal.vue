@@ -9,11 +9,12 @@ const id = ref(props.transaction.id)
 const description = ref(props.transaction.description)
 const amount = ref(props.transaction.amount)
 const profitOrLoss = ref(props.transaction.isIncome ? "Income" : "Expense")
+const date = ref(props.transaction.date)
 
 
 function editTransaction() {
 
-    if (!description.value || !amount.value || !profitOrLoss.value) {
+    if (!description.value || !amount.value || !profitOrLoss.value || !date.value) {
         alert("Please fill all fields!");
         return;
     }
@@ -23,9 +24,7 @@ function editTransaction() {
         income = true;
     }
 
-    emit("edit", { id: id.value, description: description.value, amount: amount.value, isIncome: income })
-    newTransaction.value = "";
-    amount.value = null;
+    emit("edit", { id: id.value, description: description.value, amount: amount.value, isIncome: income, date: date.value })
 }
 
 
@@ -39,6 +38,7 @@ function editTransaction() {
             <hr id="upperLine">
             <input v-model="description" placeholder="Description" maxlength="70">
             <input type="number" v-model="amount" placeholder="Amount">
+            <input type="date" v-model="date" id="dateSelector" placeholder="Select date">
             <h3>Select transaction type:</h3>
             <select v-model="profitOrLoss" id="typeSelector">
                 <option disabled value="">Please select one</option>
@@ -108,7 +108,7 @@ input {
     background-color: rgb(25, 180, 59);
     color: white;
     border: 1px solid green;
-    padding: 10px 17px;
+    padding: 10px 15px;
     border-radius: 4px;
     cursor: pointer;
     margin-right: 15px;
@@ -120,6 +120,7 @@ input {
 
 .updateButton:hover {
     transform: translateY(-2px);
+    background-color: rgb(19, 145, 46);
 }
 
 .cancelButton {
@@ -131,12 +132,13 @@ input {
     cursor: pointer;
     border-radius: 10px;
     transition: 200ms;
-    border: 1px solid rgb(56, 54, 54);
+    border: 1px solid rgb(73, 70, 70);
     box-shadow: 2px 2px 3px gray;
 }
 
 .cancelButton:hover {
     transform: translateY(-2px);
+    background-color: #494544b7;
 }
 
 .deleteButton {
@@ -155,6 +157,7 @@ input {
 
 .deleteButton:hover {
     transform: translateY(-2px);
+    background-color: #7c1406b7;
 }
 
 .flexButtons {

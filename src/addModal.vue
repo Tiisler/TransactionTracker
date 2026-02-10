@@ -6,10 +6,11 @@ const emit = defineEmits("add", "close")
 const description = ref("")
 const amount = ref(null)
 const profitOrLoss = ref("")
+const date = ref("")
 
 function submitTransaction() {
 
-    if (!description.value || !amount.value || !profitOrLoss.value) {
+    if (!description.value || !amount.value || !profitOrLoss.value || !date.value) {
         alert("Please fill all fields!");
         return;
     }
@@ -19,7 +20,7 @@ function submitTransaction() {
         income = true;
     }
 
-    emit("add", { description: description.value, amount: amount.value, isIncome: income })
+    emit("add", { description: description.value, amount: amount.value, isIncome: income, date: date.value })
     newTransaction.value = "";
     amount.value = null;
 }
@@ -34,6 +35,7 @@ function submitTransaction() {
             <hr id="upperLine">
             <input v-model="description" placeholder="Description" maxlength="70">
             <input type="number" v-model="amount" placeholder="Amount">
+            <input type="date" v-model="date" id="dateSelector" placeholder="Select date">
             <h3>Select transaction type:</h3>
             <select v-model="profitOrLoss" id="typeSelector">
                 <option disabled value="">Please select one</option>
