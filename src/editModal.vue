@@ -1,30 +1,25 @@
 <script setup>
 import { ref } from 'vue'
+import { useTransactionStore } from './stores/transactionStore'
 
-const emit = defineEmits("edit", "remove", "close")
 
+const store = useTransactionStore()
 const props = defineProps(["transaction"])
 
-const id = ref(props.transaction.id)
-const description = ref(props.transaction.description)
-const amount = ref(props.transaction.amount)
-const profitOrLoss = ref(props.transaction.isIncome ? "Income" : "Expense")
-const date = ref(props.transaction.date)
+const id = ref(store.selectedTransaction.id)
+const description = ref(store.selectedTransaction.description)
+const amount = ref(store.selectedTransaction.amount)
+const profitOrLoss = ref(store.selectedTransaction.isIncome ? "Income" : "Expense")
+const date = ref(store.selectedTransaction.date)
 
 
 function editTransaction() {
-
     if (!description.value || !amount.value || !profitOrLoss.value || !date.value) {
         alert("Please fill all fields!");
         return;
     }
-
-    let income = false;
-    if (profitOrLoss.value === "Income") {
-        income = true;
-    }
-
-    emit("edit", { id: id.value, description: description.value, amount: amount.value, isIncome: income, date: date.value })
+    store.editTransaction({ id: id.value, description: description.value, amount: amount.value, isIncome: profitOrLoss.value === "Income", date: date.value })
+    store.showEditModal = false
 }
 
 
@@ -48,8 +43,8 @@ function editTransaction() {
             <hr id="lowerLine">
             <div class="flexButtons">
                 <button @click="editTransaction" class="updateButton">Update</button>
-                <button @click="emit('close')" class="cancelButton">Cancel</button>
-                <button @click="emit('remove')" class="deleteButton">Delete</button>
+                <button @click="store.showEditModal = false" class="cancelButton">Cancel</button>
+                <button @click="store.removeTransaction(id)" class="deleteButton">Delete</button>
             </div>
         </div>
     </div>

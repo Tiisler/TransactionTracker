@@ -1,7 +1,8 @@
 <script setup>
 import { ref } from 'vue'
+import { useTransactionStore } from './stores/transactionStore'
 
-const emit = defineEmits("add", "close")
+const store = useTransactionStore()
 
 const description = ref("")
 const amount = ref(null)
@@ -15,14 +16,14 @@ function submitTransaction() {
         return;
     }
 
-    let income = false;
-    if (profitOrLoss.value === "Income") {
-        income = true;
-    }
+    store.addTransaction({
+        description: description.value,
+        amount: amount.value,
+        isIncome: profitOrLoss.value === "Income",
+        date: date.value
+    })
+    store.showAddModal = false;
 
-    emit("add", { description: description.value, amount: amount.value, isIncome: income, date: date.value })
-    newTransaction.value = "";
-    amount.value = null;
 }
 
 </script>
@@ -45,7 +46,7 @@ function submitTransaction() {
             <hr id="lowerLine">
             <div class="flexButtons">
                 <button @click="submitTransaction" class="addButton">Add</button>
-                <button @click="emit('close')" class="cancelButton">Cancel</button>
+                <button @click="store.showAddModal = false" class="cancelButton">Cancel</button>
             </div>
         </div>
     </div>

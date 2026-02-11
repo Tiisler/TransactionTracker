@@ -2,38 +2,14 @@
 import { ref } from "vue";
 import addModal from "./addModal.vue";
 import editModal from "./editModal.vue";
+import { useTransactionStore } from "./stores/transactionStore";
 
-const showAddModal = ref(false)
-const showEditModal = ref(false)
-const selectedTransaction = ref(null)
-
-let id = 0
-const transactionList = ref([{ id: id++, amount: 15.9, description: "School supplies", isIncome: false, date: "2025-02-14" },
-{ id: id++, amount: 850, description: "Salary", isIncome: true, date: "2025-02-19" }
-])
+const storeTransactions = useTransactionStore()
 
 
-function handleAddTransaction(newTransaction) {
-  transactionList.value.push({ id: id++, amount: newTransaction.amount, description: newTransaction.description, isIncome: newTransaction.isIncome, date: newTransaction.date })
-  showAddModal.value = false;
-}
-
-function handleUpdateTransaction(updatedTransaction) {
-  const index = transactionList.value.findIndex(t => t.id === updatedTransaction.id)
-  if (index !== -1) {
-    transactionList.value[index] = updatedTransaction
-  }
-  showEditModal.value = false
-}
-
-function handleRemoveTransaction() {
-  transactionList.value = transactionList.value.filter(t => t.id !== selectedTransaction.value.id)
-  showEditModal.value = false
-}
-
-function updateFunction(transaction) {
-  selectedTransaction.value = transaction
-  showEditModal.value = true
+function openEditModal(transaction) {
+  storeTransactions.selectedTransaction = transaction
+  storeTransactions.showEditModal = true
 
 }
 
@@ -46,12 +22,12 @@ function updateFunction(transaction) {
 
   <div id="box">
 
-    <button id="showAddModalButton" @click="showAddModal = true">Add Transaction</button>
+    <button id="showAddModalButton" @click="storeTransactions.showAddModal = true">Add Transaction</button>
 
     <div class="transactions">
-      <div id="transactionDiv" @click="updateFunction(transaction)"
+      <div id="transactionDiv" @click="openEditModal(transaction)"
         :class="{ isIncome: transaction.isIncome, isExpense: !transaction.isIncome }"
-        v-for="transaction in transactionList" :key="transaction.id">
+        v-for="transaction in storeTransactions.transactions" :key="transaction.id">
         <b><span class="transactionAmount">{{ transaction.amount + "€" }}</span></b>
         <span class="transactionDescription">{{ transaction.description }}</span>
         <span class="transactionDate">{{ transaction.date }}</span>
@@ -59,9 +35,8 @@ function updateFunction(transaction) {
     </div>
   </div>
 
-  <addModal v-if="showAddModal" @close="showAddModal = false" @add="handleAddTransaction" />
-  <editModal v-if="showEditModal" @close="showEditModal = false" :transaction="selectedTransaction"
-    @edit="handleUpdateTransaction" @remove="handleRemoveTransaction" />
+  <addModal v-if="storeTransactions.showAddModal" />
+  <editModal v-if="storeTransactions.showEditModal" />
 
 
 
@@ -74,11 +49,7 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
-}
-
-body {
   background-color: rgb(246, 247, 248);
-  /* Pane siia põhitausta värv */
 }
 </style>
 
