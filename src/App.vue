@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { onMounted } from "vue";
 import addModal from "./addModal.vue";
 import editModal from "./editModal.vue";
 import { useTransactionStore } from "./stores/transactionStore";
@@ -12,6 +12,10 @@ function openEditModal(transaction) {
   storeTransactions.showEditModal = true
 
 }
+
+onMounted(() => {
+  storeTransactions.loadTransactions()
+})
 
 </script>
 
