@@ -8,16 +8,19 @@ export const useTransactionStore = defineStore('transactions', () => {
 
     let id = 0
     const transactions = ref([])
-
     const showEditModal = ref(false)
     const showAddModal = ref(false)
 
+
+
     async function loadTransactions() {
+        const { data: { user } } = await supabase.auth.getUser()
 
         let { data, error } = await supabase
             .from('transactions')
             .select('*')
             .order('date', { ascending: false })
+            .eq("user_id", user.id)
 
         if (error) {
             console.error("Error loading data:", error.message)
@@ -28,18 +31,20 @@ export const useTransactionStore = defineStore('transactions', () => {
     }
 
     async function addTransaction(NewTransaction) {
+        const { data: { user } } = await supabase.auth.getUser()
         const { data, error } = await supabase
             .from('transactions')
             .insert([{
                 description: NewTransaction.description,
                 amount: NewTransaction.amount,
                 isIncome: NewTransaction.isIncome,
-                date: NewTransaction.date
+                date: NewTransaction.date,
+                user_id: user.id
             },
             ])
             .select()
         if (error) {
-            console.error("Viga lisamisel:", error.message)
+            console.error("Error adding transaction:", error.message)
         } else if (data) {
             transactions.value.push(data[0])
             transactions.value.sort((a, b) => new Date(b.date) - new Date(a.date))
@@ -80,6 +85,7 @@ export const useTransactionStore = defineStore('transactions', () => {
         transactions.value = transactions.value.filter(t => t.id !== id)
         showEditModal.value = false
     }
+
 
 
 

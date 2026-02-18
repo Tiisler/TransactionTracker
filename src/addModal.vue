@@ -101,6 +101,10 @@ input {
     box-shadow: 2px 2px 2px rgb(238, 237, 237);
 }
 
+input:focus {
+    outline: 1px solid rgb(58, 56, 56);
+}
+
 .addButton {
     background-color: rgb(25, 180, 59);
     color: white;
