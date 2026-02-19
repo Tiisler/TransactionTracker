@@ -116,6 +116,8 @@ input:focus {
 
 #signupButton:hover {
     transform: translateY(-2px);
+    background-color: rgb(24, 102, 153);
+    ;
 }
 
 a {

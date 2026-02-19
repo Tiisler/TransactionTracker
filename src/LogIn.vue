@@ -114,6 +114,7 @@ input:focus {
 
 #loginButton:hover {
     transform: translateY(-2px);
+    background-color: rgb(19, 145, 46);
 }
 
 a {

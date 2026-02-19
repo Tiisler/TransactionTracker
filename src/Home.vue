@@ -5,6 +5,7 @@ import editModal from "./editModal.vue";
 import { useTransactionStore } from "./stores/transactionStore";
 import supabase from "./config/supabase";
 
+
 const storeTransactions = useTransactionStore()
 
 
@@ -29,8 +30,17 @@ onMounted(() => {
 <template>
     <router-view />
     <div class="header">
-        <h1 id="title">Transaction Tracker</h1>
-        <button @click="logout"></button>
+        <div class="left">
+            <h1 id="title">Transaction <br>
+                <hr id="titleLine">Tracker
+            </h1>
+        </div>
+        <div class="right1"><button class=headerButtons @click="settings">
+                <font-awesome-icon icon="gear" />
+            </button></div>
+        <div class="right2"><button class=headerButtons @click="logout">
+                <font-awesome-icon icon="arrow-right-from-bracket" />
+            </button></div>
     </div>
 
     <div id="box">
@@ -67,17 +77,64 @@ body {
 </style>
 
 <style scoped>
-.header {
-    background-color: green;
-    padding: 3vh;
+#titleLine {
+    margin: none;
+    border: 1px solid white;
 }
 
+.headerButtons {
+    padding: 5px;
+    color: white;
+    background-color: transparent;
+    border: none;
+    font-size: 25px;
+    transition: 200ms;
+}
+
+.headerButtons:hover {
+    transform: translateY(-2px);
+    color: rgb(236, 232, 232);
+    cursor: pointer;
+}
+
+.header {
+    display: flex;
+    background-color: rgb(25, 180, 59);
+    padding-left: 1.5vh;
+    padding-right: 1.5vh;
+    align-items: center;
+    border-bottom: 2px solid green;
+    box-shadow: 2px 1px 4px gray;
+}
+
+.left {
+    margin-right: auto;
+}
+
+@media (min-width: 768px) {
+    .left {
+        margin-left: 2vw;
+    }
+
+    .right1,
+    .right2 {
+        transform: translateX(-2vw);
+    }
+
+
+}
+
+
+
 #title {
-    margin: 50;
+    color: white;
+    font-weight: bold;
+    font-size: 1.75rem;
 }
 
 #box {
-    max-width: 50vw;
+    width: 95%;
+    max-width: 900px;
     margin: 0 auto;
 }
 
@@ -102,19 +159,22 @@ body {
 
 .transactions div {
     padding: 20px;
-    margin: 0px 50px 0px;
+    margin-bottom: 12px;
     border-radius: 20px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 #transactionDiv {
     display: grid;
-    grid-template-columns: 75px auto 90px;
+    grid-template-columns: 60px 1fr 90px;
     align-items: center;
     box-shadow: 2px 2px 2px gray;
     background-color: rgb(255, 255, 255);
     transition: 200ms;
     cursor: pointer;
 }
+
 
 #transactionDiv:hover {
     transform: translateY(-2px);
@@ -128,11 +188,14 @@ body {
 .transactionDescription {
     color: black;
     font-size: 1.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #showAddModalButton {
     padding: 15px;
-    margin: 20px 20px 20px 50px;
+    margin: 30px 0px 30px 2px;
     border-radius: 20px;
     border: 2px solid green;
     background-color: rgb(25, 180, 59);
