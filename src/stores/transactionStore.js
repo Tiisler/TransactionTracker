@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import supabase from '@/config/supabase'
 
@@ -11,6 +11,15 @@ export const useTransactionStore = defineStore('transactions', () => {
     const showEditModal = ref(false)
     const showAddModal = ref(false)
 
+    const totalIncome = computed(() => {
+        return transactions.value.filter(t => t.isIncome).reduce((sum, t) => sum + t.amount, 0)
+    })
+
+    const totalExpense = computed(() => {
+        return transactions.value.filter(t => !t.isIncome).reduce((sum, t) => sum - t.amount, 0)
+    })
+
+    const totalSum = computed(() => totalIncome.value + totalExpense.value)
 
 
     async function loadTransactions() {
@@ -97,6 +106,9 @@ export const useTransactionStore = defineStore('transactions', () => {
         showEditModal,
         showAddModal,
         selectedTransaction,
+        totalIncome,
+        totalExpense,
+        totalSum,
 
         // Functions
         loadTransactions,

@@ -45,8 +45,13 @@ onMounted(() => {
 
     <div id="box">
 
+        <div class="upperBar">
+            <p id="totalSum">Total sum: <br><b>{{ storeTransactions.totalSum }}€</b></p>
+            <p id="totalIncome">Total income: <br><b>{{ storeTransactions.totalIncome }}€</b></p>
+            <p id="totalExpense">Total expense: <br> <b>{{ storeTransactions.totalExpense }}€</b></p>
+        </div>
+        <hr id="upperDivider">
         <button id="showAddModalButton" @click="storeTransactions.showAddModal = true">Add Transaction</button>
-
         <div class="transactions">
             <div id="transactionDiv" @click="openEditModal(transaction)"
                 :class="{ isIncome: transaction.isIncome, isExpense: !transaction.isIncome }"
@@ -77,6 +82,55 @@ body {
 </style>
 
 <style scoped>
+#totalIncome b {
+    color: rgb(25, 180, 59);
+}
+
+#upperDivider {
+    margin-bottom: 25px;
+}
+
+.upperBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 15px 0;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.upperBar p {
+    margin: 0;
+}
+
+.upperBar b {
+    font-size: 2rem;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+#totalIncome {
+    padding: 5px;
+    color: white;
+    font-size: 15px;
+    color: rgb(25, 180, 59);
+
+}
+
+#totalExpense {
+    padding: 5px;
+    color: white;
+    font-size: 15px;
+    color: rgb(146, 17, 17);
+}
+
+#totalSum {
+    padding: 5px;
+    color: rgb(0, 0, 0);
+    font-size: 15px;
+}
+
 #titleLine {
     margin: none;
     border: 1px solid white;
@@ -167,8 +221,10 @@ body {
 
 #transactionDiv {
     display: grid;
-    grid-template-columns: 60px 1fr 90px;
+    grid-template-columns: max-content 1fr 90px;
+    gap: 15px;
     align-items: center;
+    padding: 15px 20px;
     box-shadow: 2px 2px 2px gray;
     background-color: rgb(255, 255, 255);
     transition: 200ms;
@@ -195,7 +251,7 @@ body {
 
 #showAddModalButton {
     padding: 15px;
-    margin: 30px 0px 30px 2px;
+    margin: 0px 0px 25px 0px;
     border-radius: 20px;
     border: 2px solid green;
     background-color: rgb(25, 180, 59);
